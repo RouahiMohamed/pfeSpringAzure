@@ -14,7 +14,7 @@ public class ApplicationGateway {
     @DBRef
     private ResourceGroup resourceGroupe;
     @DBRef
-    private VirtualNetwork virtualNetwork;
+    private Subnet subnet;
     private boolean autoscaling;
     private Integer minimum_Instance_Count;
     private Integer maximum_Instance_Count;
@@ -29,12 +29,12 @@ public class ApplicationGateway {
         this.user = user;
     }
 
-    public ApplicationGateway(String id, String name, Region region, ResourceGroup resourceGroupe, VirtualNetwork virtualNetwork, boolean autoscaling, Integer minimum_Instance_Count, Integer maximum_Instance_Count, User user) {
+    public ApplicationGateway(String id, String name, Region region, ResourceGroup resourceGroupe, Subnet subnet , boolean autoscaling, Integer minimum_Instance_Count, Integer maximum_Instance_Count, User user) {
         this.id = id;
         this.name = name;
         this.region = region;
         this.resourceGroupe = resourceGroupe;
-        this.virtualNetwork = virtualNetwork;
+        this.subnet = subnet;
         this.autoscaling = autoscaling;
         this.minimum_Instance_Count = minimum_Instance_Count;
         this.maximum_Instance_Count = maximum_Instance_Count;
@@ -73,12 +73,12 @@ public class ApplicationGateway {
         this.resourceGroupe = resourceGroupe;
     }
 
-    public VirtualNetwork getVirtualNetwork() {
-        return virtualNetwork;
+    public Subnet getSubnet() {
+        return subnet;
     }
 
-    public void setVirtualNetwork(VirtualNetwork virtualNetwork) {
-        this.virtualNetwork = virtualNetwork;
+    public void setSubnet(Subnet subnet) {
+        this.subnet = subnet;
     }
 
     public boolean isAutoscaling() {
@@ -111,12 +111,12 @@ public class ApplicationGateway {
     public ApplicationGateway() {
     }
 
-    public ApplicationGateway(String id, String name, Region region, ResourceGroup resourceGroupe, VirtualNetwork virtualNetwork, boolean autoscaling, Integer minimum_Instance_Count, Integer maximum_Instance_Count) {
+    public ApplicationGateway(String id, String name, Region region, ResourceGroup resourceGroupe, Subnet subnet , boolean autoscaling, Integer minimum_Instance_Count, Integer maximum_Instance_Count) {
         this.id = id;
         this.name = name;
         this.region = region;
         this.resourceGroupe = resourceGroupe;
-        this.virtualNetwork = virtualNetwork;
+        this.subnet = subnet;
         this.autoscaling = autoscaling;
         this.minimum_Instance_Count = minimum_Instance_Count;
         this.maximum_Instance_Count = maximum_Instance_Count;

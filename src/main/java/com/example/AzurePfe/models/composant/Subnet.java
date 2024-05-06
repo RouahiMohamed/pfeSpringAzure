@@ -5,6 +5,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Document(collection = "subnet")
 public class Subnet {
     @Id
@@ -12,12 +15,20 @@ public class Subnet {
     private String name;
     private String adress;
     @DBRef
+    private Set<VirtualNetwork> virtualNetworks = new HashSet<>();
+    @DBRef
     private User user;
 
     public User getUser() {
         return user;
     }
+    public Set<VirtualNetwork> getVirtualNetworks() {
+        return virtualNetworks;
+    }
 
+    public void setVirtualNetworks(Set<VirtualNetwork> virtualNetworks) {
+        this.virtualNetworks = virtualNetworks;
+    }
     public void setUser(User user) {
         this.user = user;
     }
@@ -44,17 +55,19 @@ public class Subnet {
         return adress;
     }
 
-    public Subnet(String id, String name, String adress) {
+    public Subnet(String id, String name, String adress, Set<VirtualNetwork> virtualNetworks) {
         this.id = id;
         this.name = name;
         this.adress = adress;
+        this.virtualNetworks = virtualNetworks;
     }
 
-    public Subnet(String id, String name, String adress, User user) {
+    public Subnet(String id, String name, String adress, User user, Set<VirtualNetwork> virtualNetworks) {
         this.id = id;
         this.name = name;
         this.adress = adress;
         this.user = user;
+        this.virtualNetworks = virtualNetworks;
     }
 
     public Subnet() {

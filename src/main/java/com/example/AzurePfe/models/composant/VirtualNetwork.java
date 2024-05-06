@@ -13,8 +13,7 @@ public class VirtualNetwork {
     private String name;
 
     private String ipAddresses;
-    @DBRef
-    private Subnet subnet;
+
     @DBRef
     private ResourceGroup resourceGroup;
     @DBRef
@@ -30,11 +29,10 @@ public class VirtualNetwork {
         this.user = user;
     }
 
-    public VirtualNetwork(String id, String name, String ipAddresses, Subnet subnet, ResourceGroup resourceGroup, Region region, User user) {
+    public VirtualNetwork(String id, String name, String ipAddresses, ResourceGroup resourceGroup, Region region, User user) {
         this.id = id;
         this.name = name;
         this.ipAddresses = ipAddresses;
-        this.subnet = subnet;
         this.resourceGroup = resourceGroup;
         this.region = region;
         this.user = user;
@@ -72,13 +70,7 @@ public class VirtualNetwork {
         this.ipAddresses = ipAddresses;
     }
 
-    public Subnet getSubnet() {
-        return subnet;
-    }
 
-    public void setSubnet(Subnet subnet) {
-        this.subnet = subnet;
-    }
 
     public ResourceGroup getResourceGroup() {
         return resourceGroup;
@@ -91,11 +83,11 @@ public class VirtualNetwork {
         this.id = id;
     }
 
-    public VirtualNetwork(String id, String name, String ipAddresses, Subnet subnet, ResourceGroup resourceGroup, Region region) {
+    public VirtualNetwork(String id, String name, String ipAddresses, ResourceGroup resourceGroup, Region region) {
         this.id = id;
         this.name = name;
         this.ipAddresses = ipAddresses;
-        this.subnet = subnet;
+
         this.resourceGroup = resourceGroup;
         this.region = region;
     }

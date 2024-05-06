@@ -19,11 +19,11 @@ public class VirtualMachine {
     private Region region;
     @DBRef
     private ResourceGroup resourceGroupe;
-    @DBRef
-    private VirtualNetwork virtualNetwork;
+
     @DBRef
     private VMImage idImage;
-
+    @DBRef
+    private Subnet subnet;
 
     private String Username;
     private String Password;
@@ -41,12 +41,12 @@ public class VirtualMachine {
         this.user = user;
     }
 
-    public VirtualMachine(String id, String name, Region region, ResourceGroup resourceGroupe, VirtualNetwork virtualNetwork, VMImage idImage, String username, String password, DiskSize idDiskSize, User user) {
+    public VirtualMachine(String id, String name, Region region, ResourceGroup resourceGroupe , Subnet subnet , VMImage idImage, String username, String password, DiskSize idDiskSize, User user) {
         this.id = id;
         this.name = name;
         this.region = region;
         this.resourceGroupe = resourceGroupe;
-        this.virtualNetwork = virtualNetwork;
+        this.subnet = subnet;
         this.idImage = idImage;
         Username = username;
         Password = password;
@@ -86,12 +86,12 @@ public class VirtualMachine {
         this.resourceGroupe = resourceGroupe;
     }
 
-    public VirtualNetwork getVirtualNetwork() {
-        return virtualNetwork;
+    public Subnet getSubnet() {
+        return subnet;
     }
 
-    public void setVirtualNetwork(VirtualNetwork virtualNetwork) {
-        this.virtualNetwork = virtualNetwork;
+    public void setSubnet(Subnet subnet) {
+        this.subnet = subnet;
     }
 
     public VMImage getIdImage() {
@@ -130,12 +130,12 @@ public class VirtualMachine {
         this.id = id;
     }
 
-    public VirtualMachine(String id, String name, Region region, ResourceGroup resourceGroupe, VirtualNetwork virtualNetwork, VMImage idImage, String username, String password, DiskSize idDiskSize) {
+    public VirtualMachine(String id, String name, Region region, ResourceGroup resourceGroupe, Subnet subnet , VMImage idImage, String username, String password, DiskSize idDiskSize) {
         this.id = id;
         this.name = name;
         this.region = region;
         this.resourceGroupe = resourceGroupe;
-        this.virtualNetwork = virtualNetwork;
+        this.subnet = subnet;
         this.idImage = idImage;
         Username = username;
         Password = password;

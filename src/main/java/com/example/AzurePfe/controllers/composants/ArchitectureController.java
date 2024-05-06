@@ -27,6 +27,7 @@ public class ArchitectureController {
 
     @PostMapping("/add")
     public Architecture createArchitecture(@RequestBody Architecture architecture) {
+
         return architectureService.createArchitecture(architecture);
     }
 
