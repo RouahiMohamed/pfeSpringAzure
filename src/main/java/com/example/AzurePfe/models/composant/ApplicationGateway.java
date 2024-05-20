@@ -2,9 +2,17 @@ package com.example.AzurePfe.models.composant;
 
 import com.example.AzurePfe.models.User;
 import com.example.AzurePfe.models.ressources.Region;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "applicationGateway")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class ApplicationGateway {
     @Id
     private String id;
@@ -20,26 +28,6 @@ public class ApplicationGateway {
     private Integer maximum_Instance_Count;
     @DBRef
     private User user;
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
-    public ApplicationGateway(String id, String name, Region region, ResourceGroup resourceGroupe, Subnet subnet , boolean autoscaling, Integer minimum_Instance_Count, Integer maximum_Instance_Count, User user) {
-        this.id = id;
-        this.name = name;
-        this.region = region;
-        this.resourceGroupe = resourceGroupe;
-        this.subnet = subnet;
-        this.autoscaling = autoscaling;
-        this.minimum_Instance_Count = minimum_Instance_Count;
-        this.maximum_Instance_Count = maximum_Instance_Count;
-        this.user = user;
-    }
 
     public String getId() {
         return id;
@@ -104,21 +92,12 @@ public class ApplicationGateway {
     public void setMaximum_Instance_Count(Integer maximum_Instance_Count) {
         this.maximum_Instance_Count = maximum_Instance_Count;
     }
-    public ApplicationGateway(String id) {
-        this.id = id;
+
+    public User getUser() {
+        return user;
     }
 
-    public ApplicationGateway() {
-    }
-
-    public ApplicationGateway(String id, String name, Region region, ResourceGroup resourceGroupe, Subnet subnet , boolean autoscaling, Integer minimum_Instance_Count, Integer maximum_Instance_Count) {
-        this.id = id;
-        this.name = name;
-        this.region = region;
-        this.resourceGroupe = resourceGroupe;
-        this.subnet = subnet;
-        this.autoscaling = autoscaling;
-        this.minimum_Instance_Count = minimum_Instance_Count;
-        this.maximum_Instance_Count = maximum_Instance_Count;
+    public void setUser(User user) {
+        this.user = user;
     }
 }

@@ -4,10 +4,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "region")
+
+
 public class Region {
     @Id
     private String id;
-
     private String displayName;
     private String name;
     private String regionalDisplayName;

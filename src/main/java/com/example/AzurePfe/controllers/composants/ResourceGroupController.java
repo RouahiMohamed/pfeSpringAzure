@@ -22,6 +22,10 @@ public class ResourceGroupController {
     public ResourceGroup getResourceGroup(@PathVariable String id) {
         return resourceGroupService.getResourceGroupById(id);
     }
+    @PutMapping("/update/{id}")
+    public ResourceGroup updateResourceGroup(@PathVariable String id, @RequestBody ResourceGroup updatedResourceGroup) {
+        return resourceGroupService.updateResourceGroup(id, updatedResourceGroup);
+    }
 
     @GetMapping("/getAllRessource")
     public List<ResourceGroup> getAllResourceGroups() {

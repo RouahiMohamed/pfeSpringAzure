@@ -2,11 +2,13 @@ package com.example.AzurePfe.security.services.composants;
 
 import com.example.AzurePfe.models.composant.ResourceGroup;
 import com.example.AzurePfe.repository.composants.ResourceGroupRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ResourceGroupService {
 
     @Autowired
@@ -29,7 +31,7 @@ public class ResourceGroupService {
         if (existingResourceGroup != null) {
             // Update fields of existingResourceGroup with fields of updatedResourceGroup
             existingResourceGroup.setName(updatedResourceGroup.getName());
-
+                existingResourceGroup.setRegion(updatedResourceGroup.getRegion());
 
 
             // Save the updated resource group
