@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -57,6 +58,21 @@ public class ArchitectureService {
             applicationGatewayService.createApplicationGateway(resourceGroup);
         }
         return architectureRepository.save(architecture);
+    }
+    public Architecture updateArchitecture(String id, Architecture updatedArchitecture) {
+        Optional<Architecture> existingArchitectureOptional = architectureRepository.findById(id);
+        if (existingArchitectureOptional.isPresent()) {
+            Architecture existingArchitecture = existingArchitectureOptional.get();
+            existingArchitecture.setName(updatedArchitecture.getName());
+            existingArchitecture.setDateCreation(updatedArchitecture.getDateCreation());
+            // Mettez à jour les groupes de ressources existants et ajoutez les nouveaux
+            existingArchitecture.setResourceGroups(updatedArchitecture.getResourceGroups());
+            // Mettez à jour d'autres propriétés de manière similaire
+            // ...
+            return architectureRepository.save(existingArchitecture);
+        } else {
+            return null;
+        }
     }
 
 

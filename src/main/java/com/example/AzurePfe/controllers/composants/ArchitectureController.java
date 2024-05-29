@@ -1,8 +1,10 @@
 package com.example.AzurePfe.controllers.composants;
 
 import com.example.AzurePfe.models.composant.*;
+import com.example.AzurePfe.models.ressources.Region;
 import com.example.AzurePfe.security.services.composants.ArchitectureService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +21,15 @@ public class ArchitectureController {
     public List<Architecture> getAllArchitectures() {
         return architectureService.getAllArchitectures();
     }
-
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Architecture> updateArchitecture(@PathVariable String id, @RequestBody Architecture updatedArchitecture) {
+        Architecture architecture = architectureService.updateArchitecture(id, updatedArchitecture);
+        if (architecture != null) {
+            return ResponseEntity.ok(architecture);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
     @GetMapping("/getById/{id}")
     public Architecture getArchitectureById(@PathVariable String id) {
         return architectureService.getArchitectureById(id);
