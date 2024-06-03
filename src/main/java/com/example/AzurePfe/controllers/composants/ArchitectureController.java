@@ -3,11 +3,14 @@ package com.example.AzurePfe.controllers.composants;
 import com.example.AzurePfe.models.composant.*;
 import com.example.AzurePfe.models.ressources.Region;
 import com.example.AzurePfe.security.services.composants.ArchitectureService;
+import com.example.AzurePfe.security.services.infracost.InfracostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200", maxAge = 3600, allowCredentials = "true")
 @RestController
@@ -16,6 +19,23 @@ public class ArchitectureController {
 
     @Autowired
     private ArchitectureService architectureService;
+    @Autowired
+    private InfracostService infracostService;
+
+
+    @PostMapping("/estimateCost")
+    public ResponseEntity<String> estimateCosts(@RequestBody Map<String, String> requestBody) {
+        String terraformCode = requestBody.get("terraformCode");
+        if (terraformCode == null) {
+            return ResponseEntity.badRequest().body("Missing terraformCode in request body");
+        }
+        try {
+            String costEstimation = infracostService.estimateCosts(terraformCode);
+            return ResponseEntity.ok(costEstimation);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
     @GetMapping("/getAll")
     public List<Architecture> getAllArchitectures() {
@@ -23,13 +43,9 @@ public class ArchitectureController {
     }
     @PutMapping("/update/{id}")
     public ResponseEntity<Architecture> updateArchitecture(@PathVariable String id, @RequestBody Architecture updatedArchitecture) {
-        Architecture architecture = architectureService.updateArchitecture(id, updatedArchitecture);
-        if (architecture != null) {
-            return ResponseEntity.ok(architecture);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+
+        Architecture updated = architectureService.updateArchitecture(id, updatedArchitecture);
+        return ResponseEntity.ok(updated);}
     @GetMapping("/getById/{id}")
     public Architecture getArchitectureById(@PathVariable String id) {
         return architectureService.getArchitectureById(id);
@@ -58,9 +74,10 @@ public class ArchitectureController {
         // Générer le code pour les réseaux virtuels
         for (VirtualNetwork virtualNetwork : architecture.getVirtualNetworks()) {
             terraformCode.append("resource \"azurerm_virtual_network\" \"").append(virtualNetwork.getName()).append("\" {\n")
-                    .append("  name                = \"").append(virtualNetwork.getName()).append("\"\n")
-                    .append("  resource_group_name = azurerm_resource_group.").append(virtualNetwork.getResourceGroup().getName()).append(".name\n")
-                    .append("  location            = \"").append(virtualNetwork.getRegion().getName()).append("\"\n")
+                    .append("  name                = \"").append(virtualNetwork.getName()).append("\"\n");
+            if (virtualNetwork.getResourceGroup() != null){
+                terraformCode.append("  resource_group_name = azurerm_resource_group.").append(virtualNetwork.getResourceGroup().getName()).append(".name\n");}
+            terraformCode.append("  location            = \"").append(virtualNetwork.getRegion().getName()).append("\"\n")
                     .append("  address_space       = [\"").append(virtualNetwork.getIpAddresses()).append("\"]\n")
                     .append("}\n\n");
         }
@@ -69,7 +86,7 @@ public class ArchitectureController {
         for (Subnet subnet : architecture.getSubnets()) {
             terraformCode.append("resource \"azurerm_subnet\" \"").append(subnet.getName()).append("\" {\n")
                     .append("  name                 = \"").append(subnet.getName()).append("\"\n")
-                    .append("  virtual_network_name = azurerm_virtual_network.").append(subnet.getVirtualNetworks()).append(".name\n")
+                    //.append("  virtual_network_name = azurerm_virtual_network.").append(subnet.getVirtualNetworks().get()).append(".name\n")
                     .append("  address_prefixes     = [\"").append(subnet.getAdress()).append("\"]\n")
                     .append("}\n\n");
         }
@@ -77,13 +94,15 @@ public class ArchitectureController {
         // Générer le code pour les passerelles d'applications
         for (ApplicationGateway appGateway : architecture.getApplicationGateways()) {
             terraformCode.append("resource \"azurerm_application_gateway\" \"").append(appGateway.getName()).append("\" {\n")
-                    .append("  name                = \"").append(appGateway.getName()).append("\"\n")
-                    .append("  resource_group_name = azurerm_resource_group.").append(appGateway.getResourceGroupe().getName()).append(".name\n")
-                    .append("  location            = \"").append(appGateway.getRegion().getName()).append("\"\n")
-                    .append("  sku                 = \"Standard_v2\"\n")
-                    .append("  autoscale_configuration {\n")
+                    .append("  name                = \"").append(appGateway.getName()).append("\"\n");
+            if (appGateway.getResourceGroupe() != null){
+                terraformCode.append("  resource_group_name = azurerm_resource_group.").append(appGateway.getResourceGroupe().getName()).append("\n");}
+            terraformCode .append("  location            = \"").append(appGateway.getRegion().getName()).append("\"\n");
+            if (appGateway.getSubnet() != null){
+                terraformCode.append("  network_interface_ids = [azurerm_network_interface.").append(appGateway.getSubnet().getName()).append(".id]\n");}
+            terraformCode.append("  autoscale_configuration {\n")
                     .append("    min_capacity = ").append(appGateway.getMinimum_Instance_Count()).append("\n")
-                    .append("    max_capacity = ").append(appGateway.getMaximum_Instance_Count()).append("\n")
+                    .append("    max_capacity = ").append(appGateway.getMinimum_Instance_Count()).append("\n")
                     .append("  }\n")
                     .append("}\n\n");
         }
@@ -91,12 +110,14 @@ public class ArchitectureController {
         // Générer le code pour les machines virtuelles
         for (VirtualMachine vm : architecture.getVirtualMachines()) {
             terraformCode.append("resource \"azurerm_virtual_machine\" \"").append(vm.getName()).append("\" {\n")
-                    .append("  name                  = \"").append(vm.getName()).append("\"\n")
-                    .append("  resource_group_name   = azurerm_resource_group.").append(vm.getResourceGroupe().getName()).append(".name\n")
-                    .append("  location              = \"").append(vm.getRegion().getName()).append("\"\n")
-                    .append("  vm_size               = \"Standard_DS1_v2\"\n")
-                    .append("  network_interface_ids = [azurerm_network_interface.").append(vm.getSubnet().getName()).append(".id]\n")
-                    .append("  delete_os_disk_on_termination = true\n")
+                    .append("  name                  = \"").append(vm.getName()).append("\"\n");
+            if (vm.getResourceGroupe() != null){
+            terraformCode.append("  resource_group_name   = azurerm_resource_group.").append(vm.getResourceGroupe().getName()).append(".name\n");}
+            terraformCode.append("  location              = \"").append(vm.getRegion().getName()).append("\"\n")
+                    .append("  vm_size               = \"Standard_DS1_v2\"\n");
+            if (vm.getSubnet() != null){
+                terraformCode.append("  network_interface_ids = [azurerm_network_interface.").append(vm.getSubnet().getName()).append(".id]\n");}
+            terraformCode.append("  delete_os_disk_on_termination = true\n")
                     .append("  delete_data_disks_on_termination = true\n")
                     .append("  os_profile {\n")
                     .append("    computer_name  = \"").append(vm.getName()).append("\"\n")
@@ -122,17 +143,20 @@ public class ArchitectureController {
                     .append("  name                = \"").append(vmss.getName()).append("\"\n")
                     .append("  resource_group_name = azurerm_resource_group.").append(vmss.getVirtualMachine().getResourceGroupe().getName()).append(".name\n")
                     .append("  location            = \"").append(vmss.getVirtualMachine().getRegion().getName()).append("\"\n")
-                    .append("  sku                 {\n")
+                    .append("  sku {\n")
                     .append("    capacity = ").append(vmss.getNb_vm()).append("\n")
                     .append("    tier     = \"Standard\"\n")
                     .append("    size     = \"Standard_DS1_v2\"\n")
                     .append("  }\n")
-                    .append("  upgrade_policy_mode = \"Automatic\"\n")
+                    .append("  upgrade_policy {\n")
+                    .append("    mode = \"Automatic\"\n")
+                    .append("  }\n")
                     .append("}\n\n");
         }
 
         return terraformCode.toString();
     }
+
 
     @PostMapping("/generate-pulumi-code")
     public String generatePulumiCode(@RequestBody Architecture architecture) {

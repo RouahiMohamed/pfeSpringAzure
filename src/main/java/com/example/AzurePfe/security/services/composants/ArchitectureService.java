@@ -65,10 +65,12 @@ public class ArchitectureService {
             Architecture existingArchitecture = existingArchitectureOptional.get();
             existingArchitecture.setName(updatedArchitecture.getName());
             existingArchitecture.setDateCreation(updatedArchitecture.getDateCreation());
-            // Mettez à jour les groupes de ressources existants et ajoutez les nouveaux
             existingArchitecture.setResourceGroups(updatedArchitecture.getResourceGroups());
-            // Mettez à jour d'autres propriétés de manière similaire
-            // ...
+            existingArchitecture.setVmsses(updatedArchitecture.getVmsses());
+            existingArchitecture.setVirtualMachines(updatedArchitecture.getVirtualMachines());
+            existingArchitecture.setVirtualNetworks(updatedArchitecture.getVirtualNetworks());
+            existingArchitecture.setApplicationGateways(updatedArchitecture.getApplicationGateways());
+            existingArchitecture.setSubnets(updatedArchitecture.getSubnets());
             return architectureRepository.save(existingArchitecture);
         } else {
             return null;
