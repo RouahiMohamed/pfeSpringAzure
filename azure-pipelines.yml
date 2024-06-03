@@ -54,3 +54,9 @@ steps:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+- task: Docker@2
+  inputs:
+    containerRegistry: 'docker'
+    repository: 'mohamedrouahi/spring-backend'
+    command: 'buildAndPush'
+    Dockerfile: '**/Dockerfile'
